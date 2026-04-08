@@ -1102,17 +1102,17 @@
 
     <div class="tooltip" id="tooltip"></div>
 
-    <!-- GitHub Token Modal -->
+    <!-- GitHub Token Modal (Sophie only - access via ?setup=true) -->
     <div class="modal-overlay" id="token-modal">
         <div class="modal">
-            <h3>GitHub Token Required</h3>
-            <p>To publish changes for everyone, you need a GitHub Personal Access Token with <code>repo</code> scope.
-               <a href="https://github.com/settings/tokens/new?scopes=repo&description=Compliance%20Roadmap" target="_blank">Create one here</a>.<br><br>
-               Your token is stored only in your browser.</p>
+            <h3>Publisher Setup (Sophie Only)</h3>
+            <p>This sets up publishing permissions. Only Sophie's GitHub token will work.<br><br>
+               Need a token? <a href="https://github.com/settings/tokens/new?scopes=repo&description=Compliance%20Roadmap" target="_blank">Create one here</a> with <code>repo</code> scope.<br><br>
+               Token is stored only in your browser.</p>
             <input type="password" id="github-token-input" placeholder="ghp_xxxxxxxxxxxx">
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeTokenModal()">Cancel</button>
-                <button class="confirm-btn" onclick="saveTokenAndPublish()">Save & Publish</button>
+                <button class="confirm-btn" onclick="saveTokenAndPublish()">Verify & Save</button>
             </div>
         </div>
     </div>
@@ -2123,11 +2123,20 @@
             }
         }
 
-        // Publish to GitHub
+        // Publish to GitHub - only Sophie can publish
+        const ALLOWED_PUBLISHERS = ['slsamuels', 'sophie-samuels', 'sophie.samuels'];
+
         async function publishToGitHub() {
             const token = localStorage.getItem(TOKEN_KEY);
             if (!token) {
-                document.getElementById('token-modal').classList.add('visible');
+                alert('Only Sophie can publish changes.\n\nYour changes are saved locally (use Draft button).\nRefresh to see the latest published version.');
+                return;
+            }
+
+            // Verify the token belongs to an allowed publisher
+            const username = await getGitHubUsername(token);
+            if (!ALLOWED_PUBLISHERS.includes(username.toLowerCase())) {
+                alert(`Only Sophie can publish changes.\n\nYou're signed in as "${username}".\nYour changes are saved locally (use Draft button).`);
                 return;
             }
 
@@ -2226,9 +2235,26 @@
             const token = document.getElementById('github-token-input').value.trim();
             if (!token) return;
 
+            // Verify the token belongs to an allowed publisher before saving
+            const username = await getGitHubUsername(token);
+            if (!ALLOWED_PUBLISHERS.includes(username.toLowerCase())) {
+                alert(`This token is for "${username}", who is not authorized to publish.\n\nOnly Sophie can publish changes.`);
+                return;
+            }
+
             localStorage.setItem(TOKEN_KEY, token);
             closeTokenModal();
             await doPublish(token);
+        }
+
+        // Allow Sophie to set up token via URL param: ?setup=true
+        function checkSetupMode() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('setup') === 'true') {
+                document.getElementById('token-modal').classList.add('visible');
+                // Clear the URL param
+                window.history.replaceState({}, '', window.location.pathname);
+            }
         }
 
         function addProject() {
@@ -2285,6 +2311,7 @@
 
         // Initial render - load from GitHub first, fall back to localStorage
         async function init() {
+            checkSetupMode();  // Check if Sophie needs to set up token
             const loadedFromGitHub = await loadFromGitHub();
             if (!loadedFromGitHub) {
                 loadFromLocalStorage();
