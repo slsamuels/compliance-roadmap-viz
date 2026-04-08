@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Team Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a2e;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            border-color: #0d6efd;
+        }
+
+        .view-btn.active {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        /* Anchor Goals Bar */
+        .anchor-goals {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .anchor-goal {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .anchor-goal h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .anchor-goal p {
+            opacity: 0.9;
+            font-size: 11px;
+        }
+
+        .goal-compliant { background: linear-gradient(135deg, #10b981, #059669); }
+        .goal-trust { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .goal-risk { background: linear-gradient(135deg, #6b7280, #4b5563); }
+
+        /* Timeline Container */
+        .timeline-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .timeline-header {
+            display: flex;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .timeline-label-col {
+            width: 280px;
+            min-width: 280px;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #64748b;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .timeline-dates {
+            display: flex;
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .timeline-period {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .timeline-period.current {
+            background: #dbeafe;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .timeline-period .period-label {
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .timeline-period .period-dates {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Swim Lanes */
+        .swim-lane {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            min-height: 80px;
+        }
+
+        .swim-lane:last-child {
+            border-bottom: none;
+        }
+
+        .lane-label {
+            width: 280px;
+            min-width: 280px;
+            padding: 12px 16px;
+            background: #fafafa;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .lane-label h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .lane-label p {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .lane-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .lane-drop-zone {
+            flex: 1;
+            min-width: 80px;
+            border-right: 1px dashed #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 4px;
+        }
+
+        .lane-drop-zone.drag-over {
+            background: #eff6ff;
+        }
+
+        /* Project Cards */
+        .project-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 11px;
+            cursor: grab;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+
+        .project-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .project-card .project-name {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .project-card .project-metric {
+            color: #64748b;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .editable-name, .editable-metric {
+            cursor: text;
+            padding: 1px 3px;
+            border-radius: 3px;
+            transition: background 0.15s;
+        }
+
+        .editable-name:hover, .editable-metric:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .editable-name:focus, .editable-metric:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .project-card .project-metric .metric-icon {
+            font-size: 10px;
+        }
+
+        .project-card .goal-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .goal-tag.compliant { background: #10b981; }
+        .goal-tag.trust { background: #3b82f6; }
+        .goal-tag.risk { background: #6b7280; }
+
+        .project-card .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.in-progress { background: #3b82f6; }
+        .status-dot.not-started { background: #d1d5db; }
+        .status-dot.design { background: #f472b6; }
+        .status-dot.discovery { background: #60a5fa; }
+        .status-dot.done { background: #10b981; }
+
+        /* Phase Toggle */
+        .phase-toggle {
+            display: flex;
+            gap: 2px;
+            margin-top: 6px;
+            margin-bottom: 2px;
+        }
+
+        .phase-btn {
+            flex: 1;
+            padding: 3px 4px;
+            font-size: 9px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .phase-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .phase-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        .phase-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .phase-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .phase-btn.active[onclick*="research"] {
+            background: #60a5fa;
+            border-color: #60a5fa;
+        }
+
+        .phase-btn.active[onclick*="design"] {
+            background: #f472b6;
+            border-color: #f472b6;
+        }
+
+        .phase-btn.active[onclick*="build"] {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        /* Priority indicators */
+        .priority-high { border-left: 3px solid #ef4444; }
+        .priority-medium { border-left: 3px solid #f59e0b; }
+        .priority-low { border-left: 3px solid #d1d5db; }
+
+        /* Backlog Section */
+        .backlog-section {
+            margin-top: 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+        }
+
+        .backlog-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #64748b;
+        }
+
+        .backlog-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 60px;
+            padding: 8px;
+            border: 2px dashed transparent;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .backlog-cards.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        /* Spanning cards */
+        .lane-content {
+            position: relative;
+        }
+
+        .project-card.spanning {
+            position: absolute;
+            top: 8px;
+            z-index: 5;
+        }
+
+        /* Duration control */
+        .duration-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .duration-control button {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+            color: #64748b;
+        }
+
+        .duration-control button:hover {
+            background: #e2e8f0;
+            color: #1a1a2e;
+        }
+
+        .duration-control span {
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Export button */
+        .export-btn {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .export-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: #1a1a2e;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            max-width: 250px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .tooltip.visible {
+            display: block;
+        }
+
+        /* Jira Tracking View */
+        .tracking-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .tracking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tracking-card.health-good {
+            border-left: 4px solid #10b981;
+        }
+
+        .tracking-card.health-warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .tracking-card.health-bad {
+            border-left: 4px solid #ef4444;
+        }
+
+        .tracking-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .tracking-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .tracking-value.warning {
+            color: #f59e0b;
+        }
+
+        .tracking-value.good {
+            color: #10b981;
+        }
+
+        .tracking-value.bad {
+            color: #ef4444;
+        }
+
+        .tracking-detail {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .planned-vs-actual {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .planned-vs-actual h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .tracking-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tracking-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 11px;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tracking-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .tracking-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .tracking-table tr.row-gap {
+            background: #fef3c7;
+        }
+
+        .tracking-table tr.row-gap:hover {
+            background: #fde68a;
+        }
+
+        .drift-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .drift-indicator.on-track {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .drift-indicator.at-risk {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .drift-indicator.off-track {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar-fill.good { background: #10b981; }
+        .progress-bar-fill.warning { background: #f59e0b; }
+        .progress-bar-fill.bad { background: #ef4444; }
+
+        .sprint-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .sprint-breakdown h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .sprint-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .sprint-col {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .sprint-col h4 {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sprint-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .sprint-item .item-key {
+            font-weight: 600;
+            color: #3b82f6;
+            margin-right: 8px;
+        }
+
+        .sprint-item .item-points {
+            float: right;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .sprint-item.in-qe {
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .sprint-item.done {
+            border-left: 3px solid #10b981;
+            background: #f0fdf4;
+        }
+
+        .sprint-item.dropped {
+            border-left: 3px solid #ef4444;
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+
+        .epic-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .epic-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Delete button on cards */
+        .delete-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 16px;
+            height: 16px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            line-height: 1;
+            opacity: 0;
+            transition: all 0.15s;
+        }
+
+        .project-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Save indicator */
+        .save-indicator {
+            font-size: 11px;
+            color: #10b981;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Health Details Expandable */
+        .health-details {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .health-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .health-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .health-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .health-section.aligned h4 { color: #166534; }
+        .health-section.gaps h4 { color: #92400e; }
+        .health-section.unplanned h4 { color: #9a3412; }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .health-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #10b981;
+        }
+
+        .health-item.gap {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .health-item strong {
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .ticket-count {
+            font-size: 11px;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            float: right;
+        }
+
+        .ticket-list {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>Compliance Team Roadmap</h1>
+            <p class="subtitle">6-week cycles with 2-week sprints. Drag projects to reprioritize.</p>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="6week">Cycle (Sprints)</button>
+                <button class="view-btn" data-view="quarter">Quarter (Cycles)</button>
+                <button class="view-btn" data-view="18month">18 Month</button>
+                <button class="view-btn" data-view="tracking" style="border-color: #8b5cf6;">Jira Tracking</button>
+            </div>
+            <button class="export-btn" onclick="addProject()">+ Add Project</button>
+            <button class="export-btn" onclick="saveToLocalStorage()">Save</button>
+            <span class="save-indicator" id="save-indicator">Saved!</span>
+            <button class="export-btn" onclick="exportRoadmap()">Export</button>
+        </div>
+    </div>
+
+    <div class="anchor-goals">
+        <div class="anchor-goal goal-compliant">
+            <h3>Compliant Plans</h3>
+            <p>Accurate NDT, correct filings, proper corrections — plans meet regulatory requirements</p>
+        </div>
+        <div class="anchor-goal goal-trust">
+            <h3>Sponsor Trust</h3>
+            <p>Sponsors feel protected, see compliance as handled — retention driver, not just tolerated</p>
+        </div>
+        <div class="anchor-goal goal-risk">
+            <h3>Risk Protection</h3>
+            <p>Minimize L&C exposure for Gusto and sponsors — avoid penalties, audits, legal exposure</p>
+        </div>
+    </div>
+
+    <div class="timeline-container" id="timeline">
+        <!-- Timeline header and lanes injected by JS -->
+    </div>
+
+    <div class="backlog-section" id="backlog">
+        <h3>Backlog (drag to schedule, or drag here to unschedule)</h3>
+        <div class="backlog-cards" id="backlog-cards"
+             ondragover="handleBacklogDragOver(event)"
+             ondragleave="handleBacklogDragLeave(event)"
+             ondrop="handleBacklogDrop(event)">
+            <!-- Backlog cards injected by JS -->
+        </div>
+    </div>
+
+    <!-- Jira Tracking View -->
+    <div id="tracking-view" style="display: none;">
+        <div class="tracking-summary">
+            <div class="tracking-card health-warning" onclick="toggleHealthDetails()" style="cursor:pointer;">
+                <div class="tracking-label">Roadmap Health <span style="font-size:10px;">▼ click to expand</span></div>
+                <div class="tracking-value warning">At Risk</div>
+                <div class="tracking-detail">4 of 8 initiatives have active Jira work</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-label">Aligned Work</div>
+                <div class="tracking-value good">67%</div>
+                <div class="tracking-detail">of active tickets tie to roadmap</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-label">Unplanned Work</div>
+                <div class="tracking-value warning">33%</div>
+                <div class="tracking-detail">Bugs, incidents, misc</div>
+            </div>
+            <div class="tracking-card">
+                <div class="tracking-label">Roadmap Gaps</div>
+                <div class="tracking-value bad">4</div>
+                <div class="tracking-detail">Initiatives with no Jira work</div>
+            </div>
+        </div>
+
+        <!-- Expandable Health Details -->
+        <div id="health-details" class="health-details" style="display:none;">
+            <div class="health-section aligned">
+                <h4>✅ Aligned with Roadmap (4 initiatives)</h4>
+                <div class="health-grid">
+                    <div class="health-item">
+                        <strong>NDT for Conversions</strong>
+                        <span class="ticket-count">9 tickets</span>
+                        <div class="ticket-list">RETIRE-3284 (QE), RETIRE-6198, RETIRE-6389 (Blocked), RETIRE-6509, RETIRE-3811, RETIRE-3812, RETIRE-3810, RETIRE-3300, RETIRE-3295</div>
+                    </div>
+                    <div class="health-item">
+                        <strong>Roth Catchup</strong>
+                        <span class="ticket-count">2 tickets</span>
+                        <div class="ticket-list">RETIRE-5797 (In Review), RETIRE-5418 (In Review)</div>
+                    </div>
+                    <div class="health-item">
+                        <strong>Auditor & Filings</strong>
+                        <span class="ticket-count">12 tickets</span>
+                        <div class="ticket-list">Form 8955, 5500, 5498, 5558 work; Accrue filings; Auditor portal</div>
+                    </div>
+                    <div class="health-item">
+                        <strong>NDT / Corrections Bugs</strong>
+                        <span class="ticket-count">5 tickets</span>
+                        <div class="ticket-list">RETIRE-3720 (QE), RETIRE-6263, RETIRE-6602, RETIRE-2497, RETIRE-6591</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-section gaps">
+                <h4>⚠️ Roadmap Gaps (no active Jira work)</h4>
+                <div class="health-grid">
+                    <div class="health-item gap">
+                        <strong>Compliance Experience / NDT Viz</strong>
+                        <div class="ticket-list">No RETIRE COMPLIANCE tickets — may be in different project or not yet ticketed</div>
+                    </div>
+                    <div class="health-item gap">
+                        <strong>Corrections Auto-Initiation</strong>
+                        <div class="ticket-list">Only backlog items (RETIRE-2497)</div>
+                    </div>
+                    <div class="health-item gap">
+                        <strong>Stop Using Estimated Comp</strong>
+                        <div class="ticket-list">No RETIRE COMPLIANCE tickets found</div>
+                    </div>
+                    <div class="health-item gap">
+                        <strong>P0 Metrics Implementation</strong>
+                        <div class="ticket-list">No RETIRE COMPLIANCE tickets found</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-section unplanned">
+                <h4>🔶 Unplanned Work (not on roadmap)</h4>
+                <div class="health-grid">
+                    <div class="health-item">
+                        <strong>Incidents & Bugs</strong>
+                        <div class="ticket-list">RETIRE-4776 (IRS Penalties), RETIRE-6383, RETIRE-3763</div>
+                    </div>
+                    <div class="health-item">
+                        <strong>Tech Debt / Misc</strong>
+                        <div class="ticket-list">RETIRE-5509, RETIRE-6612, RETIRE-5394, RETIRE-4065, RETIRE-4716</div>
+                    </div>
+                    <div class="health-item">
+                        <strong>Other Initiatives</strong>
+                        <div class="ticket-list">RETIRE-6214 (Simple IRA), RETIRE-6363 (Partial Termination), RETIRE-2621/2622 (Admin UX)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="planned-vs-actual">
+            <h3>Planned vs Actual by Initiative</h3>
+            <table class="tracking-table">
+                <thead>
+                    <tr>
+                        <th>Initiative</th>
+                        <th>Roadmap Status</th>
+                        <th>Jira Tickets</th>
+                        <th>Target</th>
+                        <th>Progress</th>
+                        <th>Alignment</th>
+                    </tr>
+                </thead>
+                <tbody id="tracking-tbody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sprint-breakdown">
+            <h3>Current Sprint: RETIRE COMPLIANCE Component</h3>
+            <div class="sprint-columns" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="sprint-col">
+                    <h4>In Review (6)</h4>
+                    <div class="sprint-items" id="planned-items">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="sprint-col">
+                    <h4>In QE (3)</h4>
+                    <div class="sprint-items" id="qe-items">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="sprint-col">
+                    <h4>Done (3)</h4>
+                    <div class="sprint-items" id="done-items">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="sprint-col">
+                    <h4>Dropped (2)</h4>
+                    <div class="sprint-items" id="dropped-items">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="status-dot in-progress"></span> In Progress</div>
+        <div class="legend-item"><span class="status-dot design"></span> Design</div>
+        <div class="legend-item"><span class="status-dot discovery"></span> Discovery</div>
+        <div class="legend-item"><span class="status-dot not-started"></span> Not Started</div>
+        <div class="legend-item" style="margin-left: 24px;"><span style="display:inline-block;width:12px;height:12px;border-left:3px solid #ef4444;"></span> High Priority</div>
+        <div class="legend-item"><span style="display:inline-block;width:12px;height:12px;border-left:3px solid #f59e0b;"></span> Medium</div>
+        <div class="legend-item"><span style="display:inline-block;width:12px;height:12px;border-left:3px solid #d1d5db;"></span> Low</div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Project data
+        // Goals: compliant (accurate NDT/filings/corrections), trust (sponsor confidence), risk (L&C protection)
+        // sprint: absolute sprint number (0=C7-S1, 1=C7-S2, 2=C7-S3, 3=C8-S1, etc.), -1=backlog
+        // sprintDuration: how many sprints the project spans
+        const projects = [
+            {
+                id: 'compliance-exp',
+                name: 'Compliance Experience / NDT Viz',
+                metric: 'Sponsor trust, retention',
+                goals: ['compliant', 'trust'],
+                status: 'design',
+                phase: 'design',
+                priority: 'high',
+                sprint: 1,
+                sprintDuration: 2,
+                lane: 'visibility',
+                description: '401k Dashboard / UI overhaul. Employers see compliance health at a glance.'
+            },
+            {
+                id: 'corrections-auto',
+                name: 'Corrections Auto-Initiation',
+                metric: 'Churn reduction, peace of mind',
+                goals: ['compliant', 'trust'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'high',
+                sprint: 3,
+                sprintDuration: 3,
+                lane: 'automation',
+                description: 'Auto-apply corrections where deterministic. Solves problems before employers notice.'
+            },
+            {
+                id: 'ndt-conversions',
+                name: 'NDT for Conversions',
+                metric: 'Win rate vs competitors',
+                goals: ['compliant'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'high',
+                sprint: 0,
+                sprintDuration: 4,
+                lane: 'automation',
+                description: 'Expanded compliance scope for 1st year conversions. Acquisition driver.',
+                targetDate: 'May 2026'
+            },
+            {
+                id: 'apa-rtb',
+                name: 'APA 2025 RTB',
+                metric: 'L&C risk reduction',
+                goals: ['risk'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'medium',
+                sprint: 0,
+                sprintDuration: 2,
+                lane: 'reliability',
+                description: 'Annual APA run-the-business work.'
+            },
+            {
+                id: 'roth-catchup',
+                name: 'Roth Catchup + Fast Follows',
+                metric: 'Feature completeness',
+                goals: ['risk', 'trust'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'medium',
+                sprint: 0,
+                sprintDuration: 1,
+                lane: 'reliability',
+                description: 'Including corrections, W2 amendments, In Plan Roth Rollovers.'
+            },
+            {
+                id: 'auditor-filings',
+                name: 'Auditor & Filings Improvements',
+                metric: 'Auditor satisfaction',
+                goals: ['risk'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'medium',
+                sprint: 1,
+                sprintDuration: 2,
+                lane: 'filings',
+                description: 'Portal fixes and workflow improvements.'
+            },
+            {
+                id: 'state-mandates',
+                name: 'State Mandates Phase 1',
+                metric: 'Regulatory compliance',
+                goals: ['risk'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'high',
+                sprint: 0,
+                sprintDuration: 1,
+                lane: 'reliability',
+                description: 'MN/NV/CT launch. Hands off to Growth after release.',
+                handoff: true
+            },
+            {
+                id: 'stop-estimated-comp',
+                name: 'Stop Using Estimated Comp',
+                metric: 'Data accuracy, auditor trust',
+                goals: ['risk', 'trust'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'high',
+                sprint: 6,
+                sprintDuration: 3,
+                lane: 'automation',
+                description: 'Estimated comp makes compliance calcs incorrect. Scale assessment for Gusto.'
+            },
+            {
+                id: 'p0-metrics',
+                name: 'P0 Metrics Implementation',
+                metric: 'MTTD, MTTR',
+                goals: ['risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'medium',
+                sprint: 1,
+                sprintDuration: 1,
+                lane: 'reliability',
+                description: '5500 deadlines, NDT execution, census sync monitoring.'
+            },
+            {
+                id: '5500-ach-fix',
+                name: 'Fix 5500 ACH Reporting',
+                metric: 'Filing accuracy',
+                goals: ['risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'medium',
+                sprint: 6,
+                sprintDuration: 2,
+                lane: 'filings',
+                description: 'Include withheld paycheck money in 5500 even if ACH failed.'
+            },
+            {
+                id: 'roth-corrections',
+                name: 'Roth Catchup Corrections',
+                metric: 'Compliance completeness',
+                goals: ['risk'],
+                status: 'in-progress',
+                phase: 'build',
+                priority: 'medium',
+                sprint: 2,
+                sprintDuration: 2,
+                lane: 'reliability',
+                description: 'W2 amendments, In Plan Roth Rollovers, 1099R issuance.'
+            },
+            {
+                id: 'data-quality',
+                name: 'Comp/Data Quality Deep Dive',
+                metric: 'Trust, transparency',
+                goals: ['trust', 'risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'medium',
+                sprint: 12,
+                sprintDuration: 6,
+                lane: 'visibility',
+                description: 'Make clear which data we have access to. Experience for incomplete data.'
+            },
+            {
+                id: 'automate-415',
+                name: 'Automate 415 & 401a17',
+                metric: 'Compliance automation',
+                goals: ['risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'low',
+                sprint: -1,
+                sprintDuration: 1,
+                lane: 'backlog',
+                description: 'Expanded compliance scope.'
+            },
+            {
+                id: 'cm-improvements',
+                name: 'CM Improvements',
+                metric: 'Internal efficiency',
+                goals: ['risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'low',
+                sprint: -1,
+                sprintDuration: 1,
+                lane: 'backlog',
+                description: 'Corrections Manager improvements.'
+            },
+            {
+                id: 'simple-ira',
+                name: 'Simple IRA Midyear Conversions',
+                metric: 'Product expansion',
+                goals: ['compliant'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'low',
+                sprint: -1,
+                sprintDuration: 1,
+                lane: 'backlog',
+                description: 'Enable midyear conversions for Simple IRA.'
+            },
+            {
+                id: 'accrue-offboarding',
+                name: 'Support Accrue Offboarding',
+                metric: 'Partner support',
+                goals: ['risk'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'medium',
+                sprint: -1,
+                sprintDuration: 1,
+                lane: 'backlog',
+                description: 'Support Accrue offboarding workflow.'
+            }
+        ];
+
+        // Timeline configurations
+        // Gusto cycles are ~6 weeks, with 2-week sprints (3 sprints per cycle)
+        // sprintsPerPeriod: how many sprints each column represents
+        // sprintOffset: which absolute sprint the first column starts at
+        const views = {
+            '6week': {
+                label: 'Current Cycle',
+                sprintsPerPeriod: 1,  // Each column = 1 sprint
+                sprintOffset: 0,      // Starts at sprint 0 (C7-S1)
+                periods: [
+                    { label: 'Sprint 1', dates: 'Apr 7-20', current: true, sprintId: 'C7-S1' },
+                    { label: 'Sprint 2', dates: 'Apr 21-May 4', sprintId: 'C7-S2' },
+                    { label: 'Sprint 3', dates: 'May 5-18', sprintId: 'C7-S3' }
+                ]
+            },
+            'quarter': {
+                label: 'Quarter View',
+                sprintsPerPeriod: 3,  // Each column = 1 cycle = 3 sprints
+                sprintOffset: 0,      // Starts at sprint 0
+                periods: [
+                    { label: 'Cycle 7', dates: 'Apr 7 - May 18', current: true, cycleId: 'C7' },
+                    { label: 'Cycle 8', dates: 'May 19 - Jun 29', cycleId: 'C8' },
+                    { label: 'Cycle 9', dates: 'Jun 30 - Aug 10', cycleId: 'C9' }
+                ]
+            },
+            '18month': {
+                label: '18 Month View',
+                sprintsPerPeriod: 6,  // Each column = 1 quarter = 2 cycles = 6 sprints
+                sprintOffset: 0,      // Starts at sprint 0
+                periods: [
+                    { label: 'Q2 2026', dates: 'Cycles 7-8', current: true },
+                    { label: 'Q3 2026', dates: 'Cycles 9-10' },
+                    { label: 'Q4 2026', dates: 'Cycles 11-12' },
+                    { label: 'Q1 2027', dates: 'Cycles 13-14' },
+                    { label: 'Q2 2027', dates: 'Cycles 15-16' },
+                    { label: 'Q3 2027', dates: 'Cycles 17-18' }
+                ]
+            }
+        };
+
+        // Convert project sprint to view period
+        function getViewPosition(project, view) {
+            if (project.sprint < 0) return -1; // Backlog
+            const adjustedSprint = project.sprint - view.sprintOffset;
+            return Math.floor(adjustedSprint / view.sprintsPerPeriod);
+        }
+
+        // Convert project sprint duration to view duration (minimum 1)
+        function getViewDuration(project, view) {
+            const sprintDuration = project.sprintDuration || 1;
+            return Math.max(1, Math.ceil(sprintDuration / view.sprintsPerPeriod));
+        }
+
+        // Convert view period back to sprint (for drops)
+        function sprintFromViewPosition(viewPeriod, view) {
+            return (viewPeriod * view.sprintsPerPeriod) + view.sprintOffset;
+        }
+
+        // Get max sprints visible in current view
+        function getMaxSprintsInView(view) {
+            return view.periods.length * view.sprintsPerPeriod;
+        }
+
+        const lanes = [
+            { id: 'visibility', name: 'Compliance Visibility', subtitle: 'Growth + Integration', priority: 1 },
+            { id: 'automation', name: 'Automation & Hands-Off', subtitle: 'Growth (retention) + ER exp', priority: 1 },
+            { id: 'reliability', name: 'Reliability & Observability', subtitle: 'Foundational', priority: 2 },
+            { id: 'filings', name: 'Filings Modernization', subtitle: 'When capacity allows', priority: 3 }
+        ];
+
+        let currentView = '6week';
+        let draggedProject = null;
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline');
+            const view = views[currentView];
+
+            // Header
+            let html = `
+                <div class="timeline-header">
+                    <div class="timeline-label-col">Theme / Priority</div>
+                    <div class="timeline-dates">
+                        ${view.periods.map((p, i) => `
+                            <div class="timeline-period ${p.current ? 'current' : ''}">
+                                <div class="period-label">${p.label}</div>
+                                <div class="period-dates">${p.dates}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Lanes
+            const numPeriods = view.periods.length;
+            lanes.forEach(lane => {
+                // Filter projects in this lane that are visible in current view
+                const laneProjects = projects.filter(p => {
+                    if (p.lane !== lane.id) return false;
+                    const viewPos = getViewPosition(p, view);
+                    return viewPos >= 0 && viewPos < numPeriods;
+                });
+
+                // Separate single-period and spanning projects based on VIEW duration
+                const singleProjects = laneProjects.filter(p => getViewDuration(p, view) <= 1);
+                const spanningProjects = laneProjects.filter(p => getViewDuration(p, view) > 1);
+
+                html += `
+                    <div class="swim-lane">
+                        <div class="lane-label">
+                            <h4>${lane.name}</h4>
+                            <p>${lane.subtitle}</p>
+                        </div>
+                        <div class="lane-content" id="lane-${lane.id}">
+                            ${view.periods.map((_, i) => `
+                                <div class="lane-drop-zone" data-lane="${lane.id}" data-period="${i}"
+                                     ondragover="handleDragOver(event)"
+                                     ondragleave="handleDragLeave(event)"
+                                     ondrop="handleDrop(event)">
+                                    ${singleProjects.filter(p => getViewPosition(p, view) === i).map(p => renderProjectCard(p, view)).join('')}
+                                </div>
+                            `).join('')}
+                            ${spanningProjects.map(p => renderSpanningCard(p, view)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Render backlog
+            renderBacklog();
+        }
+
+        function renderProjectCard(project, view, isBacklog = false) {
+            const goalLabels = { compliant: 'C', trust: 'T', risk: 'R' };
+            const goalTags = project.goals.map(g =>
+                `<span class="goal-tag ${g}">${goalLabels[g] || g.charAt(0).toUpperCase()}</span>`
+            ).join('');
+
+            const phase = project.phase || 'research';
+            const sprintDuration = project.sprintDuration || 1;
+            const maxSprints = getMaxSprintsInView(view);
+            const canExtend = !isBacklog && project.sprint >= 0 && (project.sprint + sprintDuration) < maxSprints;
+            const canShrink = sprintDuration > 1;
+
+            // Duration label based on current view
+            const durationLabel = getDurationLabel(sprintDuration, view);
+
+            return `
+                <div class="project-card priority-${project.priority}"
+                     draggable="true"
+                     data-id="${project.id}"
+                     ondragstart="handleDragStart(event)"
+                     ondragend="handleDragEnd(event)"
+                     onmouseenter="showTooltip(event, '${project.id}')"
+                     onmouseleave="hideTooltip()">
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteProject('${project.id}')" title="Delete project">×</button>
+                    <div class="project-name">
+                        <span class="status-dot ${project.status}"></span>
+                        <span class="editable-name" contenteditable="true"
+                              onblur="updateProjectName('${project.id}', this.innerText)"
+                              onclick="event.stopPropagation();"
+                              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${project.name}</span>
+                        ${project.handoff ? '<span style="font-size:9px;color:#f59e0b;">handoff</span>' : ''}
+                    </div>
+                    <div class="project-metric">
+                        <span class="metric-icon">📊</span>
+                        <span class="editable-metric" contenteditable="true"
+                              onblur="updateProjectMetric('${project.id}', this.innerText)"
+                              onclick="event.stopPropagation();"
+                              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${project.metric}</span>
+                    </div>
+                    <div class="phase-toggle" onclick="event.stopPropagation();">
+                        <button class="phase-btn ${phase === 'research' ? 'active' : ''}" onclick="setPhase('${project.id}', 'research')">Research</button>
+                        <button class="phase-btn ${phase === 'design' ? 'active' : ''}" onclick="setPhase('${project.id}', 'design')">Design</button>
+                        <button class="phase-btn ${phase === 'build' ? 'active' : ''}" onclick="setPhase('${project.id}', 'build')">Build</button>
+                    </div>
+                    ${!isBacklog && project.sprint >= 0 ? `
+                    <div class="duration-control" onclick="event.stopPropagation();">
+                        <button onclick="adjustDuration('${project.id}', -1)" ${!canShrink ? 'disabled style="opacity:0.3"' : ''}>−</button>
+                        <span>${durationLabel}</span>
+                        <button onclick="adjustDuration('${project.id}', 1)" ${!canExtend ? 'disabled style="opacity:0.3"' : ''}>+</button>
+                    </div>
+                    ` : ''}
+                    <div style="margin-top: 4px;">${goalTags}</div>
+                </div>
+            `;
+        }
+
+        function renderSpanningCard(project, view) {
+            const numPeriods = view.periods.length;
+            const viewDuration = getViewDuration(project, view);
+            const viewPosition = getViewPosition(project, view);
+
+            // Calculate width and position based on view periods
+            const widthPercent = (viewDuration / numPeriods) * 100;
+            const leftPercent = (viewPosition / numPeriods) * 100;
+
+            const goalLabels = { compliant: 'C', trust: 'T', risk: 'R' };
+            const goalTags = project.goals.map(g =>
+                `<span class="goal-tag ${g}">${goalLabels[g] || g.charAt(0).toUpperCase()}</span>`
+            ).join('');
+
+            const phase = project.phase || 'research';
+            const sprintDuration = project.sprintDuration || 1;
+            const maxSprints = getMaxSprintsInView(view);
+            const canExtend = (project.sprint + sprintDuration) < maxSprints;
+            const canShrink = sprintDuration > 1;
+
+            // Duration label based on current view
+            const durationLabel = getDurationLabel(sprintDuration, view);
+
+            return `
+                <div class="project-card spanning priority-${project.priority}"
+                     style="left: calc(${leftPercent}% + 4px); width: calc(${widthPercent}% - 8px);"
+                     draggable="true"
+                     data-id="${project.id}"
+                     ondragstart="handleDragStart(event)"
+                     ondragend="handleDragEnd(event)"
+                     onmouseenter="showTooltip(event, '${project.id}')"
+                     onmouseleave="hideTooltip()">
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteProject('${project.id}')" title="Delete project">×</button>
+                    <div class="project-name">
+                        <span class="status-dot ${project.status}"></span>
+                        <span class="editable-name" contenteditable="true"
+                              onblur="updateProjectName('${project.id}', this.innerText)"
+                              onclick="event.stopPropagation();"
+                              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${project.name}</span>
+                        ${project.handoff ? '<span style="font-size:9px;color:#f59e0b;">handoff</span>' : ''}
+                    </div>
+                    <div class="project-metric">
+                        <span class="metric-icon">📊</span>
+                        <span class="editable-metric" contenteditable="true"
+                              onblur="updateProjectMetric('${project.id}', this.innerText)"
+                              onclick="event.stopPropagation();"
+                              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${project.metric}</span>
+                    </div>
+                    <div class="phase-toggle" onclick="event.stopPropagation();">
+                        <button class="phase-btn ${phase === 'research' ? 'active' : ''}" onclick="setPhase('${project.id}', 'research')">Research</button>
+                        <button class="phase-btn ${phase === 'design' ? 'active' : ''}" onclick="setPhase('${project.id}', 'design')">Design</button>
+                        <button class="phase-btn ${phase === 'build' ? 'active' : ''}" onclick="setPhase('${project.id}', 'build')">Build</button>
+                    </div>
+                    <div class="duration-control" onclick="event.stopPropagation();">
+                        <button onclick="adjustDuration('${project.id}', -1)" ${!canShrink ? 'disabled style="opacity:0.3"' : ''}>−</button>
+                        <span>${durationLabel}</span>
+                        <button onclick="adjustDuration('${project.id}', 1)" ${!canExtend ? 'disabled style="opacity:0.3"' : ''}>+</button>
+                    </div>
+                    <div style="margin-top: 4px;">${goalTags}</div>
+                </div>
+            `;
+        }
+
+        // Get human-readable duration label based on view
+        function getDurationLabel(sprintDuration, view) {
+            if (currentView === '6week') {
+                return `${sprintDuration} sprint${sprintDuration > 1 ? 's' : ''}`;
+            } else if (currentView === 'quarter') {
+                const cycles = sprintDuration / 3;
+                if (cycles >= 1 && sprintDuration % 3 === 0) {
+                    return `${cycles} cycle${cycles > 1 ? 's' : ''}`;
+                }
+                return `${sprintDuration} sprints`;
+            } else {
+                const quarters = sprintDuration / 6;
+                if (quarters >= 1 && sprintDuration % 6 === 0) {
+                    return `${quarters} qtr${quarters > 1 ? 's' : ''}`;
+                }
+                const cycles = sprintDuration / 3;
+                if (cycles >= 1 && sprintDuration % 3 === 0) {
+                    return `${cycles} cycle${cycles > 1 ? 's' : ''}`;
+                }
+                return `${sprintDuration} sprints`;
+            }
+        }
+
+        function renderBacklog() {
+            const backlogContainer = document.getElementById('backlog-cards');
+            const view = views[currentView];
+            const backlogProjects = projects.filter(p => p.sprint === -1 || p.lane === 'backlog');
+
+            backlogContainer.innerHTML = backlogProjects.map(p => renderProjectCard(p, view, true)).join('');
+        }
+
+        function adjustDuration(projectId, delta) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            const view = views[currentView];
+            const maxSprints = getMaxSprintsInView(view);
+            const newSprintDuration = (project.sprintDuration || 1) + delta;
+
+            // Validate: duration >= 1 and doesn't exceed available sprints
+            if (newSprintDuration < 1) return;
+            if (project.sprint + newSprintDuration > maxSprints) return;
+
+            project.sprintDuration = newSprintDuration;
+            renderTimeline();
+        }
+
+        function handleBacklogDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleBacklogDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleBacklogDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            if (draggedProject) {
+                const project = projects.find(p => p.id === draggedProject);
+                if (project) {
+                    project.sprint = -1;
+                    project.lane = 'backlog';
+                    project.sprintDuration = 1; // Reset duration when moving to backlog
+                    renderTimeline();
+                }
+            }
+        }
+
+        function handleDragStart(e) {
+            draggedProject = e.target.dataset.id;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedProject = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            if (draggedProject) {
+                const project = projects.find(p => p.id === draggedProject);
+                if (project) {
+                    const newLane = e.currentTarget.dataset.lane;
+                    const viewPeriod = parseInt(e.currentTarget.dataset.period);
+                    const view = views[currentView];
+                    const maxSprints = getMaxSprintsInView(view);
+
+                    if (newLane !== undefined) {
+                        project.lane = newLane;
+                    }
+                    if (!isNaN(viewPeriod)) {
+                        // Convert view period to sprint
+                        project.sprint = sprintFromViewPosition(viewPeriod, view);
+                        // Ensure sprint duration doesn't exceed available sprints
+                        const maxDuration = maxSprints - project.sprint;
+                        if ((project.sprintDuration || 1) > maxDuration) {
+                            project.sprintDuration = maxDuration;
+                        }
+                    }
+
+                    renderTimeline();
+                }
+            }
+        }
+
+        function showTooltip(e, projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>${project.name}</strong><br>
+                <span style="color:#94a3b8;">${project.description}</span>
+                ${project.targetDate ? `<br><br><strong>Target:</strong> ${project.targetDate}` : ''}
+            `;
+            tooltip.style.left = (e.pageX + 10) + 'px';
+            tooltip.style.top = (e.pageY + 10) + 'px';
+            tooltip.classList.add('visible');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('visible');
+        }
+
+        function exportRoadmap() {
+            const data = {
+                view: currentView,
+                exportDate: new Date().toISOString(),
+                projects: projects.map(p => ({
+                    name: p.name,
+                    lane: p.lane,
+                    sprint: p.sprint,
+                    sprintDuration: p.sprintDuration,
+                    priority: p.priority,
+                    status: p.status,
+                    metric: p.metric,
+                    goals: p.goals
+                }))
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compliance-roadmap-${currentView}-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        // Jira tracking data - RETIRE project, COMPLIANCE component
+        // JQL: project = RETIRE AND component = COMPLIANCE AND sprint IN openSprints()
+        const trackingData = {
+            initiatives: [
+                {
+                    name: 'NDT for Conversions',
+                    roadmapStatus: 'Sprint 2',
+                    epicKey: 'Multiple',
+                    epicName: 'NDT for Mid Year Conversions',
+                    jiraTickets: 9,
+                    activeTickets: 1,
+                    plannedCompletion: 'May 2026',
+                    actualProgress: 35,
+                    drift: 'on-track'
+                },
+                {
+                    name: 'Roth Catchup + Fast Follows',
+                    roadmapStatus: 'In Review',
+                    epicKey: 'RETIRE-679',
+                    epicName: 'Roth Catchup',
+                    jiraTickets: 2,
+                    activeTickets: 2,
+                    plannedCompletion: 'Apr 20',
+                    actualProgress: 85,
+                    drift: 'on-track'
+                },
+                {
+                    name: 'Auditor & Filings',
+                    roadmapStatus: 'In Progress',
+                    epicKey: 'Multiple',
+                    epicName: 'Form 8955, 5500, Accrue',
+                    jiraTickets: 12,
+                    activeTickets: 6,
+                    plannedCompletion: 'Ongoing',
+                    actualProgress: 50,
+                    drift: 'on-track'
+                },
+                {
+                    name: 'Compliance Experience / NDT Viz',
+                    roadmapStatus: 'Design',
+                    epicKey: 'None',
+                    epicName: 'No RETIRE COMPLIANCE tickets (check if separate project)',
+                    jiraTickets: 0,
+                    activeTickets: 0,
+                    plannedCompletion: 'Sprint 1-2',
+                    actualProgress: 25,
+                    drift: 'at-risk'
+                },
+                {
+                    name: 'Corrections Auto-Initiation',
+                    roadmapStatus: 'Not Started',
+                    epicKey: 'RETIRE-651',
+                    epicName: 'Corrections Manager (backlog only)',
+                    jiraTickets: 2,
+                    activeTickets: 0,
+                    plannedCompletion: 'Sprint 2',
+                    actualProgress: 0,
+                    drift: 'at-risk'
+                },
+                {
+                    name: 'Stop Using Estimated Comp',
+                    roadmapStatus: 'Not Started',
+                    epicKey: 'None',
+                    epicName: 'No Jira tickets found',
+                    jiraTickets: 0,
+                    activeTickets: 0,
+                    plannedCompletion: 'TBD',
+                    actualProgress: 0,
+                    drift: 'off-track'
+                },
+                {
+                    name: 'P0 Metrics Implementation',
+                    roadmapStatus: 'Not Started',
+                    epicKey: 'None',
+                    epicName: 'No Jira tickets found',
+                    jiraTickets: 0,
+                    activeTickets: 0,
+                    plannedCompletion: 'Sprint 1',
+                    actualProgress: 0,
+                    drift: 'off-track'
+                }
+            ],
+            // Current sprint items from RETIRE COMPLIANCE component
+            plannedItems: [
+                { key: 'RETIRE-6602', summary: 'ComplianceTestResultPlanCompliancePostProcessOp fix', points: 3, assignee: 'Tommy Chiu' },
+                { key: 'RETIRE-6523', summary: 'Health::Filings audit task count check fix', points: 2, assignee: 'Tommy Chiu' },
+                { key: 'RETIRE-6263', summary: 'Census record rollup HCE determination fix', points: 3, assignee: 'Dan Rice' },
+                { key: 'RETIRE-2238', summary: 'Form8955 Healthchecks', points: 5, assignee: 'Dan Rice' },
+                { key: 'RETIRE-5797', summary: 'Remove SEI owners from roth catchup tasks', points: 2, assignee: 'Collin Smith' },
+                { key: 'RETIRE-4044', summary: 'Filings for Accrue plans', points: 3, assignee: 'Tommy Chiu' }
+            ],
+            // Items in QE
+            inQEItems: [
+                { key: 'RETIRE-3763', summary: 'Replace calendly link in compliance dash', points: 1, assignee: 'Alexander Copeland' },
+                { key: 'RETIRE-3720', summary: '[Bug] NDT CRR task broken Top Heavy step', points: 2, assignee: 'Kevin Chow' },
+                { key: 'RETIRE-3284', summary: 'Display placeholder message for pre-ready dashboard', points: 2, assignee: 'Kevin Chow' }
+            ],
+            // Completed this sprint
+            doneItems: [
+                { key: 'RETIRE-6530', summary: 'Bulk remove LRG dashboard feature flag', points: 2, assignee: 'Tommy Chiu' },
+                { key: 'RETIRE-6517', summary: 'Remove NDT correction failure taxes flag', points: 1, assignee: 'Tommy Chiu' },
+                { key: 'RETIRE-6125', summary: 'Update mid-year-ndt flag for per-plan scoping', points: 2, assignee: 'Dan Rice' }
+            ],
+            // Canceled/dropped
+            droppedItems: [
+                { key: 'RETIRE-3543', summary: 'SEI profit sharing reminder email', points: 3, assignee: 'Sophie Samuels' },
+                { key: 'RETIRE-3591', summary: 'Build Vestwell NDT data feed', points: 5, assignee: 'Unassigned' }
+            ]
+        };
+
+        function renderTrackingView() {
+            // Render initiative tracking table
+            const tbody = document.getElementById('tracking-tbody');
+            tbody.innerHTML = trackingData.initiatives.map(init => `
+                <tr class="${init.jiraTickets === 0 ? 'row-gap' : ''}">
+                    <td><strong>${init.name}</strong></td>
+                    <td>${init.roadmapStatus}</td>
+                    <td>
+                        ${init.jiraTickets > 0
+                            ? `<span style="font-weight:600;color:#1e40af;">${init.jiraTickets}</span> total, <span style="color:#10b981;">${init.activeTickets}</span> active`
+                            : '<span style="color:#ef4444;">No tickets</span>'
+                        }
+                        <br><span style="color:#64748b;font-size:11px;">${init.epicName}</span>
+                    </td>
+                    <td>${init.plannedCompletion}</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill ${init.drift === 'on-track' ? 'good' : init.drift === 'at-risk' ? 'warning' : 'bad'}" style="width: ${init.actualProgress}%"></div>
+                        </div>
+                        <span style="font-size:11px;color:#64748b;">${init.actualProgress}%</span>
+                    </td>
+                    <td><span class="drift-indicator ${init.drift}">${init.drift === 'on-track' ? '✓ Aligned' : init.drift === 'at-risk' ? '⚠ At Risk' : '✗ Gap'}</span></td>
+                </tr>
+            `).join('');
+
+            // Render sprint items
+            const renderItem = (item, extraClass = '') => `
+                <div class="sprint-item ${extraClass}">
+                    <a href="https://gustohq.atlassian.net/browse/${item.key}" target="_blank" class="item-key">${item.key}</a>
+                    <div style="margin-top:4px;color:#475569;font-size:11px;">${item.summary}</div>
+                    <div style="margin-top:4px;color:#94a3b8;font-size:10px;">${item.assignee}</div>
+                </div>
+            `;
+
+            document.getElementById('planned-items').innerHTML = trackingData.plannedItems.map(item => renderItem(item)).join('');
+            document.getElementById('qe-items').innerHTML = trackingData.inQEItems.map(item => renderItem(item, 'in-qe')).join('');
+            document.getElementById('done-items').innerHTML = trackingData.doneItems.map(item => renderItem(item, 'done')).join('');
+            document.getElementById('dropped-items').innerHTML = trackingData.droppedItems.map(item => renderItem(item, 'dropped')).join('');
+        }
+
+        function updateProjectName(projectId, newName) {
+            const project = projects.find(p => p.id === projectId);
+            if (project && newName.trim()) {
+                project.name = newName.trim();
+            }
+        }
+
+        function updateProjectMetric(projectId, newMetric) {
+            const project = projects.find(p => p.id === projectId);
+            if (project && newMetric.trim()) {
+                project.metric = newMetric.trim();
+            }
+        }
+
+        function setPhase(projectId, phase) {
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                project.phase = phase;
+                // Update status based on phase
+                if (phase === 'build') {
+                    project.status = 'in-progress';
+                } else if (phase === 'design') {
+                    project.status = 'design';
+                } else {
+                    project.status = 'not-started';
+                }
+                renderTimeline();
+            }
+        }
+
+        function toggleHealthDetails() {
+            const details = document.getElementById('health-details');
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+
+        function showView(view) {
+            const timelineContainer = document.getElementById('timeline');
+            const backlog = document.getElementById('backlog');
+            const trackingView = document.getElementById('tracking-view');
+            const anchorGoals = document.querySelector('.anchor-goals');
+            const legend = document.querySelector('.legend');
+
+            if (view === 'tracking') {
+                timelineContainer.style.display = 'none';
+                backlog.style.display = 'none';
+                trackingView.style.display = 'block';
+                anchorGoals.style.display = 'none';
+                legend.style.display = 'none';
+                renderTrackingView();
+            } else {
+                timelineContainer.style.display = 'block';
+                backlog.style.display = 'block';
+                trackingView.style.display = 'none';
+                anchorGoals.style.display = 'flex';
+                legend.style.display = 'flex';
+                currentView = view;
+                renderTimeline();
+            }
+        }
+
+        // localStorage persistence
+        const STORAGE_KEY = 'compliance-roadmap-projects';
+
+        function saveToLocalStorage() {
+            const data = {
+                version: 2,  // Version 2: uses sprint/sprintDuration instead of period/duration
+                savedAt: new Date().toISOString(),
+                projects: projects
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+            // Show save indicator
+            const indicator = document.getElementById('save-indicator');
+            indicator.classList.add('visible');
+            setTimeout(() => indicator.classList.remove('visible'), 2000);
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.projects && Array.isArray(data.projects)) {
+                        // Clear existing projects and load saved ones
+                        projects.length = 0;
+                        data.projects.forEach(p => {
+                            // Migrate from v1 (period/duration) to v2 (sprint/sprintDuration)
+                            if (p.period !== undefined && p.sprint === undefined) {
+                                p.sprint = p.period;
+                                delete p.period;
+                            }
+                            if (p.duration !== undefined && p.sprintDuration === undefined) {
+                                p.sprintDuration = p.duration;
+                                delete p.duration;
+                            }
+                            // Ensure defaults
+                            if (p.sprint === undefined) p.sprint = -1;
+                            if (p.sprintDuration === undefined) p.sprintDuration = 1;
+                            projects.push(p);
+                        });
+                        console.log(`Loaded ${projects.length} projects from localStorage (saved ${data.savedAt})`);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Failed to load from localStorage:', e);
+                }
+            }
+            return false;
+        }
+
+        function addProject() {
+            const newId = 'project-' + Date.now();
+            const newProject = {
+                id: newId,
+                name: 'New Project',
+                metric: 'Define metric',
+                goals: ['compliant'],
+                status: 'not-started',
+                phase: 'research',
+                priority: 'medium',
+                sprint: -1,  // Backlog
+                lane: 'backlog',
+                sprintDuration: 1,
+                description: 'Click to edit description'
+            };
+            projects.push(newProject);
+            renderTimeline();
+
+            // Focus the name field for immediate editing
+            setTimeout(() => {
+                const card = document.querySelector(`[data-id="${newId}"] .editable-name`);
+                if (card) {
+                    card.focus();
+                    // Select all text
+                    const range = document.createRange();
+                    range.selectNodeContents(card);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }, 50);
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Delete this project?')) {
+                const index = projects.findIndex(p => p.id === projectId);
+                if (index !== -1) {
+                    projects.splice(index, 1);
+                    renderTimeline();
+                }
+            }
+        }
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                showView(btn.dataset.view);
+            });
+        });
+
+        // Initial render - load saved data first
+        loadFromLocalStorage();
+        renderTimeline();
+    </script>
+</body>
+</html>
