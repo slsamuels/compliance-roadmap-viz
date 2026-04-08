@@ -388,7 +388,6 @@
 
         .project-card.spanning {
             position: absolute;
-            top: 8px;
             z-index: 5;
         }
 
@@ -1442,13 +1441,22 @@
                 const singleProjects = laneProjects.filter(p => getViewDuration(p, view) <= 1);
                 const spanningProjects = laneProjects.filter(p => getViewDuration(p, view) > 1);
 
+                // Calculate row positions for spanning projects to avoid overlap
+                // Sort by start position, then assign rows
+                const sortedSpanning = [...spanningProjects].sort((a, b) => getViewPosition(a, view) - getViewPosition(b, view));
+                const rowAssignments = assignRows(sortedSpanning, view, numPeriods);
+
+                // Calculate lane height based on max rows needed
+                const maxRow = Math.max(0, ...Object.values(rowAssignments));
+                const laneMinHeight = (maxRow + 1) * 140 + 16; // 140px per row + padding
+
                 html += `
                     <div class="swim-lane">
                         <div class="lane-label">
                             <h4>${lane.name}</h4>
                             <p>${lane.subtitle}</p>
                         </div>
-                        <div class="lane-content" id="lane-${lane.id}">
+                        <div class="lane-content" id="lane-${lane.id}" style="min-height: ${laneMinHeight}px;">
                             ${view.periods.map((_, i) => `
                                 <div class="lane-drop-zone" data-lane="${lane.id}" data-period="${i}"
                                      ondragover="handleDragOver(event)"
@@ -1457,11 +1465,50 @@
                                     ${singleProjects.filter(p => getViewPosition(p, view) === i).map(p => renderProjectCard(p, view)).join('')}
                                 </div>
                             `).join('')}
-                            ${spanningProjects.map(p => renderSpanningCard(p, view)).join('')}
+                            ${sortedSpanning.map(p => renderSpanningCard(p, view, rowAssignments[p.id] || 0)).join('')}
                         </div>
                     </div>
                 `;
             });
+
+            // Assign rows to spanning projects to prevent overlap
+            function assignRows(spanningProjects, view, numPeriods) {
+                const assignments = {};
+                const rows = []; // Each row tracks which periods are occupied
+
+                for (const project of spanningProjects) {
+                    const start = getViewPosition(project, view);
+                    const duration = getViewDuration(project, view);
+                    const end = Math.min(start + duration - 1, numPeriods - 1);
+
+                    // Find first row where this project fits
+                    let assignedRow = 0;
+                    for (let row = 0; row < rows.length; row++) {
+                        let fits = true;
+                        for (let p = start; p <= end; p++) {
+                            if (rows[row] && rows[row][p]) {
+                                fits = false;
+                                break;
+                            }
+                        }
+                        if (fits) {
+                            assignedRow = row;
+                            break;
+                        }
+                        assignedRow = row + 1;
+                    }
+
+                    // Mark periods as occupied in this row
+                    if (!rows[assignedRow]) rows[assignedRow] = {};
+                    for (let p = start; p <= end; p++) {
+                        rows[assignedRow][p] = true;
+                    }
+
+                    assignments[project.id] = assignedRow;
+                }
+
+                return assignments;
+            }
 
             container.innerHTML = html;
 
@@ -1525,7 +1572,7 @@
             `;
         }
 
-        function renderSpanningCard(project, view) {
+        function renderSpanningCard(project, view, rowIndex = 0) {
             const numPeriods = view.periods.length;
             const viewDuration = getViewDuration(project, view);
             const viewPosition = getViewPosition(project, view);
@@ -1533,6 +1580,7 @@
             // Calculate width and position based on view periods
             const widthPercent = (viewDuration / numPeriods) * 100;
             const leftPercent = (viewPosition / numPeriods) * 100;
+            const topOffset = 8 + (rowIndex * 140); // 140px per row
 
             const goalLabels = { compliant: 'C', trust: 'T', risk: 'R' };
             const goalTags = project.goals.map(g =>
@@ -1550,7 +1598,7 @@
 
             return `
                 <div class="project-card spanning priority-${project.priority}"
-                     style="left: calc(${leftPercent}% + 4px); width: calc(${widthPercent}% - 8px);"
+                     style="left: calc(${leftPercent}% + 4px); width: calc(${widthPercent}% - 8px); top: ${topOffset}px;"
                      draggable="true"
                      data-id="${project.id}"
                      ondragstart="handleDragStart(event)"
